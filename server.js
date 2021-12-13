@@ -16,6 +16,10 @@ const connection = require('./db/connection')
 const Tought = require('./models/Tought')
 const User = require('./models/User')
 
+//routes
+const toughtRoutes = require('./routes/toughtsRouters')
+const ToughtController = require('./controllers/ToughtController') // para acessar a /
+
 //template engine
 app.engine('handlebars', exphbs.engine())
 app.set('view engine', 'handlebars')
@@ -25,6 +29,7 @@ app.use(express.urlencoded({ extended: true }))
 
 app.use(express.json())
 app.use(express.static('public'))
+
 
 //session middleware
 app.use(session({
@@ -54,6 +59,11 @@ app.use((req, res, next) =>{
     }
     next()
 })
+
+//Routes
+app.use('/toughts', toughtRoutes)
+app.get('/', ToughtController.showToughts)
+
 //connection.sync({force: true})
 connection.sync()
     .then(() =>{
