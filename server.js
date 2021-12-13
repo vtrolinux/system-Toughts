@@ -18,6 +18,7 @@ const User = require('./models/User')
 
 //routes
 const toughtRoutes = require('./routes/toughtsRouters')
+const authRoutes = require('./routes/authRoutes')
 const ToughtController = require('./controllers/ToughtController') // para acessar a /
 
 //template engine
@@ -62,6 +63,8 @@ app.use((req, res, next) =>{
 
 //Routes
 app.use('/toughts', toughtRoutes)
+app.use('/', authRoutes)
+
 app.get('/', ToughtController.showToughts)
 
 //connection.sync({force: true})
