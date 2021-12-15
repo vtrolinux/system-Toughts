@@ -8,9 +8,9 @@ module.exports = class ToughtController {
         try {
             const user = await User.findOne({where: {id: userId,},include: Tought,plain: true,}) 
             //console.log(user.Toughts) 
-            const toughts = user.Toughts.map((result) => result.dataValues)   
-            let emptyToughts = true
-            
+            const toughts = user.Toughts.map((result) => result.dataValues) 
+
+            let emptyToughts = true           
             if (toughts.length > 0) {
                 emptyToughts = false
             }
@@ -48,8 +48,14 @@ module.exports = class ToughtController {
             console.log(error)
         }
     }
+    static async updateTought(req, res) {
+        const id = req.params.id
+        const UserId = req.session.userid
+        const tought = await Tought.findOne({where: {id: id, UserId: UserId}, raw: true})
+        res.render('toughts/edit', {tought})
+    }
     static async removeTought(req, res) {
-        
+
         console.log('userid:'+req.session.userid)
         const id = req.body.id
         const UserId = req.session.userid

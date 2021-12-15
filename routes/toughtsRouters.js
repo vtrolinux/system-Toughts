@@ -5,6 +5,8 @@ const checkSession = require('../middleware/check-session')
 router.get('/add', checkSession, ToughtController.createTought)
 router.post('/add', checkSession, ToughtController.createToughtSave)
 
+router.get('/edit/:id', checkSession, ToughtController.updateTought)
+
 router.post('/remove',checkSession, ToughtController.removeTought)
 
 router.get('/', ToughtController.showToughts)
