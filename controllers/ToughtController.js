@@ -1,24 +1,34 @@
 const Tought = require('../models/Tought')
-const { findAll } = require('../models/User')
 const User = require('../models/User')
+const {Op} = require('sequelize')
 
 module.exports = class ToughtController {
     static async showToughts(req,res){
-        //const toughtsData = await Tought.findAll({
-       // include: User,attributes: {exclude: ['password']} })
-       const toughtsData = await Tought.findAll({
+       
+        let search = ''
+        if(req.query.search){
+            search = req.query.search
+        }
+        const toughtsData = await Tought.findAll({
             include: [
                 {
                     model: User,
                     attributes: {exclude: ['password','email']}
                 }
-            ]
+            ],
+            where:{
+                title: {[Op.like]: `%${search}%`},
+            }
         })
         //console.log(toughtsData)
         const toughts = toughtsData.map((result) => result.get({plain: true}))
+        const toughtsQty = toughts.length
+        if (toughtsQty === 0) {
+            toughtsQty = false
+        }
         /*.get({plain: true}) joga todos os dados no mesmo array*/ 
         console.log(toughts)
-        res.render('toughts/home', {toughts})
+        res.render('toughts/home', {toughts, search, toughtsQty})
     }
 
     static async dashboard(req, res) {
