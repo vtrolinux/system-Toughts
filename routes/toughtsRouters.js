@@ -6,6 +6,7 @@ router.get('/add', checkSession, ToughtController.createTought)
 router.post('/add', checkSession, ToughtController.createToughtSave)
 
 router.get('/edit/:id', checkSession, ToughtController.updateTought)
+router.post('/edit', checkSession, ToughtController.updateToughtSave)
 
 router.post('/remove',checkSession, ToughtController.removeTought)
 

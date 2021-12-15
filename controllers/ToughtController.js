@@ -54,6 +54,23 @@ module.exports = class ToughtController {
         const tought = await Tought.findOne({where: {id: id, UserId: UserId}, raw: true})
         res.render('toughts/edit', {tought})
     }
+    static async updateToughtSave(req, res){
+
+        const id = req.body.id
+        const UserId = req.session.userid
+        const tought = {
+            title: req.body.title
+        }
+        try {
+            await Tought.update(tought, {where: {id: id, UserId: UserId}})
+            req.flash('message', 'Pensamento atualizado com sucesso!')
+            req.session.save(() => {
+                res.redirect('/toughts/dashboard')
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
     static async removeTought(req, res) {
 
         console.log('userid:'+req.session.userid)
