@@ -1,7 +1,26 @@
 const Tought = require('../models/Tought')
+const { findAll } = require('../models/User')
 const User = require('../models/User')
 
 module.exports = class ToughtController {
+    static async showToughts(req,res){
+        //const toughtsData = await Tought.findAll({
+       // include: User,attributes: {exclude: ['password']} })
+       const toughtsData = await Tought.findAll({
+            include: [
+                {
+                    model: User,
+                    attributes: {exclude: ['password','email']}
+                }
+            ]
+        })
+        //console.log(toughtsData)
+        const toughts = toughtsData.map((result) => result.get({plain: true}))
+        /*.get({plain: true}) joga todos os dados no mesmo array*/ 
+        console.log(toughts)
+        res.render('toughts/home', {toughts})
+    }
+
     static async dashboard(req, res) {
 
         const userId = req.session.userid
@@ -27,12 +46,11 @@ module.exports = class ToughtController {
         }      
         
     }
-    static showToughts(req,res){
-        res.render('toughts/home')
-    }
+
     static createTought(req,res){
         res.render('toughts/create')
     }
+
     static async createToughtSave(req, res){
         const tought = {
             title: req.body.title,
@@ -48,12 +66,14 @@ module.exports = class ToughtController {
             console.log(error)
         }
     }
+
     static async updateTought(req, res) {
         const id = req.params.id
         const UserId = req.session.userid
         const tought = await Tought.findOne({where: {id: id, UserId: UserId}, raw: true})
         res.render('toughts/edit', {tought})
     }
+
     static async updateToughtSave(req, res){
 
         const id = req.body.id
@@ -71,6 +91,7 @@ module.exports = class ToughtController {
             console.log(error)
         }
     }
+
     static async removeTought(req, res) {
 
         console.log('userid:'+req.session.userid)
