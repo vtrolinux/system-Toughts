@@ -4,7 +4,28 @@ const User = require('../models/User')
 module.exports = class ToughtController {
     static async dashboard(req, res) {
 
-        res.render('toughts/dashboard')
+        const userId = req.session.userid
+        try {
+            const user = await User.findOne({where: {id: userId,},include: Tought,plain: true,}) 
+            //console.log(user.Toughts) 
+            const toughts = user.Toughts.map((result) => result.dataValues)   
+            let emptyToughts = true
+            
+            if (toughts.length > 0) {
+                emptyToughts = false
+            }
+            
+            console.log(toughts)
+            console.log(emptyToughts)
+            
+            res.render('toughts/dashboard',{ toughts, emptyToughts })
+
+        } catch (error) {
+            res.render('toughts/dashboard', {message: 'falha ao buscar seus pensamentos!'})
+            console.log(error)
+            return
+        }      
+        
     }
     static showToughts(req,res){
         res.render('toughts/home')
